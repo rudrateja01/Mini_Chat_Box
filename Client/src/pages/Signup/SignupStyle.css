@@ -1,0 +1,176 @@
+.main-form {
+    display: flex;
+    min-height: 100vh;
+    background-color: #ffffff; /* White background for the whole container */
+}
+
+/* LEFT Section: Form Container (The white side) */
+.left {
+    flex: 0 0 50%; /* Explicitly set to 50% width on desktop */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; /* Center content block vertically */
+    padding: 20px;
+    position: relative; 
+}
+
+/* RIGHT Section: Image Container (The image side) */
+.right {
+    flex: 0 0 50%; /* Explicitly set to 50% width on desktop */
+    height: 100vh;
+    width: 40%;
+    overflow: hidden;
+}
+
+.right img {
+    object-fit: cover; 
+    display: block;
+}
+
+/* Logo placement (Absolute positioning based on image) */
+/* Assuming the logo has an ID #logo as per your commented out HTML */
+#logo {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 90px; /* Adjusted size */
+    height: auto;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* 3. Form Wrapper and Content */
+/* ------------------------------------------------------------------------- */
+
+.form {
+    /* This wrapper defines the central content box width */
+    width: 100%;
+    max-width: 450px; 
+    /* Ensures the form block is slightly above true center to accommodate footer */
+    transform: translateY(-20px); 
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spacing between input groups */
+}
+
+/* Header (H1) and Sign In link alignment */
+.form h1 {
+    font-size: 28px; /* Slightly smaller for better fit */
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Styling for the assumed "Sign in Instead" link */
+/* Since your code doesn't have this, it's targeted as 'span' or similar */
+.form h1 + a, /* If you add an anchor next to h1 */
+.form h1 + span /* If you add a span next to h1 */ {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4B66FF; /* Blue link color */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Field group (label and input) */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a4a4a;
+}
+
+.field input {
+    padding: 10px 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.field input:focus {
+    border-color: #4B66FF; 
+    outline: none;
+    box-shadow: 0 0 0 1px #4B66FF;
+}
+
+
+/* Policy Text (The checkbox/agreement paragraph) */
+form > p:nth-of-type(1) {
+    font-size: 13px;
+    color: #616161;
+    margin-top: 5px;
+    /* Simulate checkbox indentation/padding for accurate look */
+    padding-left: 20px; 
+    position: relative;
+}
+
+form > p:nth-of-type(1) span {
+    color: #4B66FF;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Submit Button */
+form button {
+    padding: 12px 20px;
+    background-color: #e0e0e0; /* The distinct light gray from the image */
+    color: #757575; /* Medium gray text */
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-top: 15px;
+    width: 100%;
+}
+
+
+/* Footer Text (Protected by reCAPTCHA...) */
+.left > p:last-child {
+    position: absolute;
+    bottom: 30px; /* Slightly higher than the bottom edge */
+    max-width: 480px;
+    text-align: center;
+    font-size: 11px;
+    color: #8c8c8c;
+    padding: 0 40px;
+}
+.left > p:last-child span {
+    color: #4B66FF; 
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.right{
+    width: 30%;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .main-form form {
+    padding: 30px 20px;
+  }
+
+  .main-form form h1 {
+    font-size: 24px;
+  }
+
+  .field input {
+    padding: 8px 10px;
+  }
+}

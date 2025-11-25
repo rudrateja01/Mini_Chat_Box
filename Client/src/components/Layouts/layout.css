@@ -1,0 +1,95 @@
+/* Admin Layout */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f9f9f9;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #001f8b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar nav a {
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.sidebar nav a.active, .sidebar nav a:hover {
+  background: #0033cc;
+}
+
+/* Main area */
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.header button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #001f8b;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Content area */
+.content-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Auth Layout */
+.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f2f2f2;
+}
+
+.auth-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 360px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+.auth-container h2 {
+  margin-bottom: 20px;
+  color: #001f8b;
+}

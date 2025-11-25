@@ -1,0 +1,124 @@
+/* Fix global horizontal overflow */
+body {
+  overflow-x: hidden !important;
+}
+
+/* Container for chat widget */
+.chat-widget {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 999;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden; /* extra safety */
+}
+
+/* Floating chat button */
+.widget-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #001f8b;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.widget-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Mini chat box container */
+.mini-chat {
+  width: 320px;
+  max-width: calc(100vw - 40px); /* 🔥 FIX: prevents overflow */
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  margin-bottom: 10px;
+  animation: slideUp 0.3s ease;
+
+  /* Additional safety */
+  box-sizing: border-box;
+}
+
+/* Slide-up animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form styles */
+.intro-form {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro-form h4 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #001f8b;
+}
+
+/* Inputs and textarea */
+.intro-form input,
+.intro-form textarea {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.intro-form textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Submit button */
+.intro-form button {
+  padding: 10px;
+  border-radius: 8px;
+  background: #001f8b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.intro-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Thank you message */
+.thanks {
+  padding: 16px;
+  text-align: center;
+}
+
+.thanks button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #001f8b;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
