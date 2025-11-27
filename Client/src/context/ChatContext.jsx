@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
-import { fetchTicketsAPI, fetchMessagesAPI, sendMessageAPI } from "../api/tickets";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { fetchTickets, fetchTicketMessages, sendMessageToTicket } from "../api/tickets";
 
 const ChatContext = createContext();
 
@@ -9,39 +9,42 @@ export const ChatProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Load all tickets
   const loadTickets = async () => {
     setLoading(true);
     try {
-      const data = await fetchTicketsAPI();
-      setTickets(data);
+      const data = await fetchTickets();
+      setTickets(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load tickets:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // Select a ticket and load its messages
   const selectTicket = async (ticket) => {
     setSelectedTicket(ticket);
     setLoading(true);
     try {
-      const msgs = await fetchMessagesAPI(ticket._id || ticket.ticketId);
-      setMessages(msgs);
+      const msgs = await fetchTicketMessages(ticket._id);
+      setMessages(Array.isArray(msgs) ? msgs : []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load messages:", err);
       setMessages([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // Send a message
   const sendMessage = async (text) => {
-    if (!selectedTicket) return;
+    if (!selectedTicket || !text) return;
     try {
-      const newMsg = await sendMessageAPI(selectedTicket._id || selectedTicket.ticketId, text);
+      const newMsg = await sendMessageToTicket(selectedTicket._id, text);
       setMessages((prev) => [...prev, newMsg]);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to send message:", err);
     }
   };
 
@@ -59,6 +62,8 @@ export const ChatProvider = ({ children }) => {
         loadTickets,
         selectTicket,
         sendMessage,
+        setSelectedTicket,
+        setMessages,
       }}
     >
       {children}

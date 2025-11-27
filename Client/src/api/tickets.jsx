@@ -1,53 +1,44 @@
-import api from './axiosConfig'; // your axios instance
+// src/api/tickets.jsx
+import api from "./axiosConfig";
 
-// ==========================
-// CREATE PUBLIC TICKET
-// ==========================
-export const createPublicTicket = async (ticketData) => {
-  try {
-    const response = await api.post('/tickets/public', ticketData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating public ticket:', error);
-    throw error;
-  }
-};
+// ---------------------------
+// Public ticket (for MiniChatBox / landing page)
+// ---------------------------
+export const createPublicTicket = (payload) =>
+  api.post("/tickets/public", payload).then(res => res.data);
 
-// ==========================
-// FETCH ALL TICKETS
-// ==========================
-export const fetchTicketsAPI = async () => {
-  try {
-    const response = await api.get('/tickets');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching tickets:', error);
-    throw error;
-  }
-};
+// ---------------------------
+// Fetch all tickets (admin)
+// ---------------------------
+export const fetchTickets = (params) =>
+  api.get("/tickets", { params }).then(res => res.data);
 
-// ==========================
-// FETCH MESSAGES FOR A TICKET
-// ==========================
-export const fetchMessagesAPI = async (ticketId) => {
-  try {
-    const response = await api.get(`/tickets/${ticketId}/messages`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching messages for ticket ${ticketId}:`, error);
-    throw error;
-  }
-};
+// ---------------------------
+// Fetch single ticket (admin)
+// ---------------------------
+export const fetchTicket = (ticketId) =>
+  api.get(`/tickets/${ticketId}`).then(res => res.data);
 
-// ==========================
-// SEND NEW MESSAGE FOR A TICKET
-// ==========================
-export const sendMessageAPI = async (ticketId, text) => {
-  try {
-    const response = await api.post(`/tickets/${ticketId}/messages`, { text });
-    return response.data;
-  } catch (error) {
-    console.error(`Error sending message to ticket ${ticketId}:`, error);
-    throw error;
-  }
-};
+// ---------------------------
+// Fetch messages of a ticket
+// ---------------------------
+export const fetchTicketMessages = (ticketId) =>
+  api.get(`/tickets/${ticketId}/messages`).then(res => res.data);
+
+// ---------------------------
+// Assign ticket to teammate (admin)
+// ---------------------------
+export const assignTicket = (ticketId, assignedToId) =>
+  api.put(`/tickets/${ticketId}/assign`, { assignedTo: assignedToId }).then(res => res.data);
+
+// ---------------------------
+// Update ticket status (admin)
+// ---------------------------
+export const updateStatus = (ticketId, status) =>
+  api.put(`/tickets/${ticketId}/status`, { status }).then(res => res.data);
+
+// ---------------------------
+// Send a message to a ticket
+// ---------------------------
+export const sendMessageToTicket = (ticketId, text) =>
+  api.post(`/tickets/${ticketId}/message`, { text }).then(res => res.data);

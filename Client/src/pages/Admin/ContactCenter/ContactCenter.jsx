@@ -16,23 +16,25 @@ export default function ContactCenter() {
     const loadTeammates = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("/api/team", {
+        const res = await fetch("http://localhost:4000/api/team", { // <-- backend URL
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
         setTeammates(Array.isArray(data) ? data : data.team || []);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load teammates:", err);
+        setTeammates([]);
       }
     };
     loadTeammates();
   }, []);
 
+  // Assign teammate
   const handleAssign = async (id) => {
     if (!selectedTicket) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/tickets/${selectedTicket._id}/assign`, {
+      const res = await fetch(`http://localhost:4000/api/tickets/${selectedTicket._id}/assign`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -43,15 +45,16 @@ export default function ContactCenter() {
       const updatedTicket = await res.json();
       selectTicket(updatedTicket);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to assign teammate:", err);
     }
   };
 
+  // Update ticket status
   const handleStatusUpdate = async (status) => {
     if (!selectedTicket) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/tickets/${selectedTicket._id}/status`, {
+      const res = await fetch(`http://localhost:4000/api/tickets/${selectedTicket._id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +65,7 @@ export default function ContactCenter() {
       const updatedTicket = await res.json();
       selectTicket(updatedTicket);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to update status:", err);
     }
   };
 
@@ -79,9 +82,9 @@ export default function ContactCenter() {
         <span>Chats</span>
         <hr />
         {loading && <p>Loading chats...</p>}
-        {!loading && tickets.length === 0 && <p>No chats found.</p>}
+        {!loading && (!Array.isArray(tickets) || tickets.length === 0) && <p>No chats found.</p>}
 
-        {tickets.map((t, idx) => {
+        {Array.isArray(tickets) && tickets.map((t, idx) => {
           const nameParts = t.user?.name?.split(" ") || [];
           const avatarText = ((nameParts[0]?.[0] || "") + (nameParts[1]?.[0] || "")).toUpperCase();
           return (
@@ -110,9 +113,10 @@ export default function ContactCenter() {
             </div>
 
             <div className="cc-chat-messages">
-              {messages.length === 0 ? (
+              {Array.isArray(messages) && messages.length === 0 ? (
                 <p className="no-messages">No messages yet</p>
               ) : (
+                Array.isArray(messages) &&
                 messages.map((msg, idx) => {
                   const date = new Date(msg.createdAt).toLocaleDateString();
                   return (
@@ -197,23 +201,24 @@ export default function ContactCenter() {
             </div>
             {dropdownOpen && (
               <div className="dropdown-options">
-                {teammates.map((tm) => (
-                  <div
-                    key={tm._id}
-                    className="dropdown-option"
-                    onClick={() => {
-                      handleAssign(tm._id);
-                      setDropdownOpen(false);
-                    }}
-                  >
-                    <div className="cc-avatar-small">
-                      {tm.Username?.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                {Array.isArray(teammates) &&
+                  teammates.map((tm) => (
+                    <div
+                      key={tm._id}
+                      className="dropdown-option"
+                      onClick={() => {
+                        handleAssign(tm._id);
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      <div className="cc-avatar-small">
+                        {tm.Username?.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                      </div>
+                      <span>
+                        {tm.Username} ({tm.Designation})
+                      </span>
                     </div>
-                    <span>
-                      {tm.Username} ({tm.Designation})
-                    </span>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
