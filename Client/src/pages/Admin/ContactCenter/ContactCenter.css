@@ -260,15 +260,22 @@
 
 /* RIGHT PANEL */
 /* RIGHT PANEL CONTAINER */
+/* ===========================
+   RIGHT PANEL
+=========================== */
 .cc-right {
   width: 28%;
   background: #fff;
   border-left: 1px solid #e5e5e5;
   padding: 20px;
   overflow-y: auto;
+  overflow-x: visible;
+  font-family: 'Inter', sans-serif;
 }
 
-/* TOP HEADER */
+/* ===========================
+   TOP HEADER
+=========================== */
 .cc-header {
   display: flex;
   align-items: center;
@@ -290,45 +297,96 @@
   font-weight: bold;
 }
 
-/* Chat Text Beside Avatar */
+/* Chat text beside avatar */
 .cc-chat-label {
   font-size: 20px;
   font-weight: 600;
   margin: 0;
 }
 
-/* SECTION TITLES */
+/* ===========================
+   SECTION TITLES
+=========================== */
 .cc-title {
   font-size: 18px;
-  margin-top: 15px;
-  margin-bottom: 8px;
+  margin: 15px 0 8px;
   font-weight: 600;
+  color: #184E7F;
 }
 
-/* INPUT SECTION */
-.cc-section-inputs {
+/* ===========================
+   DETAILS / INFO BOXES
+=========================== */
+.cc-section-details {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  margin: 15px 0;
 }
 
-.cc-section-inputs input {
-  padding: 10px;
-  border: 1px solid #ddd;
+.detail-box {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  padding: 10px 15px;
   border-radius: 8px;
-  background: #f8f8f8;
+  gap: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  color: #333;
+  transition: background 0.2s ease;
 }
 
-/* TEAMMATE FIELD Flex Row */
-.cc-teammate-field {
+.detail-box:hover {
+  background: #f0f0f0;
+}
+
+.detail-icon {
+  font-size: 20px;
+  color: #555;
+}
+
+/* ===========================
+   TEAMMATE FIELD
+=========================== */
+/* SINGLE ROW TEAMMATE BOX */
+.cc-teammate-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  margin-top: 10px;
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
 }
 
-/* LEFT SIDE: Avatar + Name */
+/* Teammate name */
+.cc-teammate-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+/* Dropdown button */
+.cc-teammate-dropdown-btn {
+  width: 40px;
+  height: 35px;
+  font-size: 30px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #808080;
+}
+
+.cc-teammate-dropdown-btn:hover {
+  background: #dcdcdc;
+}
+
+
 .cc-teammate-left {
   display: flex;
   align-items: center;
@@ -350,68 +408,138 @@
 }
 
 /* Dropdown styling for teammates */
+/* DROPDOWN WRAPPER */
 .cc-teammate-dropdown {
-  position: relative;
-  width: 60%;
+  position: relative;   /* REQUIRED */
+  width: 100%;
+  margin-top: 10px;
 }
 
-.selected-teammate {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
 
+
+/* DROPDOWN LIST BOX */
 .dropdown-options {
   position: absolute;
-  top: 100%;
+  top: 100%;    /* directly below box */
   left: 0;
   width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
+  background: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background: #fff;
-  z-index: 10;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 5px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 9999;     /* ensures it appears above everything */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
 }
 
+/* INDIVIDUAL OPTION */
 .dropdown-option {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   cursor: pointer;
-  transition: background 0.2s ease;
 }
 
 .dropdown-option:hover {
   background: #f5f5f5;
 }
 
-/* STATUS FIELD */
-.cc-status-field {
+/* SMALL AVATAR */
+.cc-avatar-small {
+  width: 35px;
+  height: 35px;
+  background: #4f73df;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* USER INFO */
+.dropdown-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.dropdown-designation {
+  font-size: 13px;
+  color: #777;
+}
+
+
+/* ===========================
+   STATUS FIELD
+=========================== */
+/* STATUS BOX ROW */
+
+.cc-single-status-box {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.cc-status-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
 }
 
-.cc-status-field input {
-  width: 55%;
-  padding: 10px;
-  background: #f8f8f8;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+.cc-status-icon {
+  font-size: 22px;
+  color: #808080;
 }
 
-/* Dropdown select fallback */
-.cc-dropdown {
-  padding: 8px;
+.cc-status-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #808080;
+}
+
+.cc-chevron {
+  width: 40px;
+  height: 35px;
+  font-size: 30px;
   border-radius: 8px;
-  background: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #808080;
+}
+
+/* DROPDOWN */
+.cc-status-dropdown {
   border: 1px solid #ccc;
+  border-radius: 10px;
+  background: white;
+  margin-top: 6px;
+  overflow: hidden;
 }
+
+.cc-status-option {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #808080;
+}
+
+.cc-status-option:hover {
+  background: #eee;
+}
+
