@@ -1,17 +1,53 @@
-import api from "./axiosConfig";
+import api from './axiosConfig'; // your axios instance
 
-// Create ticket from public form (landing page / chat widget)
-export const createPublicTicket = (payload) =>
-  api.post("/tickets/public", payload).then((r) => r.data);
+// ==========================
+// CREATE PUBLIC TICKET
+// ==========================
+export const createPublicTicket = async (ticketData) => {
+  try {
+    const response = await api.post('/tickets/public', ticketData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating public ticket:', error);
+    throw error;
+  }
+};
 
-// Fetch all tickets (admin)
-export const fetchTickets = (params) => api.get("/tickets", { params }).then(r => r.data);
+// ==========================
+// FETCH ALL TICKETS
+// ==========================
+export const fetchTicketsAPI = async () => {
+  try {
+    const response = await api.get('/tickets');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tickets:', error);
+    throw error;
+  }
+};
 
-// Fetch a single ticket
-export const fetchTicket = (id) => api.get(`/tickets/${id}`).then(r => r.data);
+// ==========================
+// FETCH MESSAGES FOR A TICKET
+// ==========================
+export const fetchMessagesAPI = async (ticketId) => {
+  try {
+    const response = await api.get(`/tickets/${ticketId}/messages`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching messages for ticket ${ticketId}:`, error);
+    throw error;
+  }
+};
 
-// Assign ticket (admin)
-export const assignTicket = (ticketId, body) => api.post(`/tickets/${ticketId}/assign`, body).then(r => r.data);
-
-// Update ticket status
-export const updateStatus = (ticketId, body) => api.post(`/tickets/${ticketId}/status`, body).then(r => r.data);
+// ==========================
+// SEND NEW MESSAGE FOR A TICKET
+// ==========================
+export const sendMessageAPI = async (ticketId, text) => {
+  try {
+    const response = await api.post(`/tickets/${ticketId}/messages`, { text });
+    return response.data;
+  } catch (error) {
+    console.error(`Error sending message to ticket ${ticketId}:`, error);
+    throw error;
+  }
+};

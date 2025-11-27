@@ -12,14 +12,14 @@ export default function Login() {
   const { login, error } = useLogin();
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await login(username, password); 
+      await login(email, password); 
       navigate("/admin");   // 🔥 dashboard route
     } catch (err) {
       alert(err.message || "Login failed");
@@ -36,8 +36,8 @@ export default function Login() {
             <label>Username</label>
             <input 
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>

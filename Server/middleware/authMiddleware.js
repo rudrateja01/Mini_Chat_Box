@@ -18,7 +18,7 @@ const authMiddleware = async(req, res, next)=> {
       return res.status(401).json({ message: "Invalid token" });
     }
 
-    req.user = user;
+    req.user = await User.findById(decoded.id).select("name email role");;
     next();
   } catch (err) {
     return res.status(401).json({ message: "Token invalid or expired" });

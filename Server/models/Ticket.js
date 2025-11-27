@@ -7,7 +7,7 @@ const ticketSchema = new mongoose.Schema({
     email: String,
     phone: String,
   },
-  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },name: String, // Admin default
+  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Admin default
   status: { type: String, enum: ["open", "in_progress", "resolved"], default: "open" },
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
   createdAt: { type: Date, default: Date.now },

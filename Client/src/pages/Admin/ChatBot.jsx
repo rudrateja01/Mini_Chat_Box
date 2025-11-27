@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchTicket, updateStatus } from '../../api/tickets';
 
-export default function ChatBox({ ticket }) {
+export default function ChatBot({ ticket }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState('');

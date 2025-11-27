@@ -48,20 +48,27 @@ export const createTicket = async (req, res) => {
 // Get all tickets
 export const getTickets = async (req, res) => {
   try {
+    // Only ADMIN can see all tickets
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
     const tickets = await Ticket.find()
-      .populate("assignedTo", "name email") // show assigned admin
+      .populate("assignedTo", "name email")
       .populate({
-        path: "message",
+        path: "messages",
         select: "text senderId timestamp",
-        populate: { path: "senderId", select: "name" } // show sender name
+        populate: { path: "senderId", select: "name" }
       })
       .sort({ updatedAt: -1 });
 
     res.json({ tickets });
+
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch tickets", error: error.message });
   }
 };
+
 
 // Get single ticket by ticketId
 export const getTicket = async (req, res) => {

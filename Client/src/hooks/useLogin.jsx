@@ -9,7 +9,7 @@ const useLogin = () => {
     const res = await fetch("http://localhost:4000/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ EmailID, password }),
+       body: JSON.stringify({ email: EmailID, password }),
     });
     const data = await res.json();
 
@@ -18,9 +18,16 @@ const useLogin = () => {
   }
 
     if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data));
-      dispatch({ type: "LOGIN", payload: data });
+      // localStorage.setItem("token", data.token);
+      // localStorage.setItem("user", JSON.stringify(data.user));
+      // dispatch({ type: "LOGIN", payload: data.user });
+      const userWithToken = { ...data.user, token: data.token };
+
+      // Store in localStorage
+      localStorage.setItem("user", JSON.stringify(userWithToken));
+
+      // Update auth context
+      dispatch({ type: "LOGIN", payload: userWithToken });
     }
   };
 

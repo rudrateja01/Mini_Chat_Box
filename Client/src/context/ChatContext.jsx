@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { fetchTicketsAPI, fetchMessagesAPI, sendMessageAPI } from '../api/tickets';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { fetchTicketsAPI, fetchMessagesAPI, sendMessageAPI } from "../api/tickets";
 
 const ChatContext = createContext();
 
@@ -25,7 +25,7 @@ export const ChatProvider = ({ children }) => {
     setSelectedTicket(ticket);
     setLoading(true);
     try {
-      const msgs = await fetchMessagesAPI(ticket.ticketId);
+      const msgs = await fetchMessagesAPI(ticket._id || ticket.ticketId);
       setMessages(msgs);
     } catch (err) {
       console.error(err);
@@ -37,8 +37,12 @@ export const ChatProvider = ({ children }) => {
 
   const sendMessage = async (text) => {
     if (!selectedTicket) return;
-    const newMsg = await sendMessageAPI(selectedTicket.ticketId, text);
-    setMessages((prev) => [...prev, newMsg]);
+    try {
+      const newMsg = await sendMessageAPI(selectedTicket._id || selectedTicket.ticketId, text);
+      setMessages((prev) => [...prev, newMsg]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -46,15 +50,17 @@ export const ChatProvider = ({ children }) => {
   }, []);
 
   return (
-    <ChatContext.Provider value={{
-      tickets,
-      selectedTicket,
-      messages,
-      loading,
-      loadTickets,
-      selectTicket,
-      sendMessage
-    }}>
+    <ChatContext.Provider
+      value={{
+        tickets,
+        selectedTicket,
+        messages,
+        loading,
+        loadTickets,
+        selectTicket,
+        sendMessage,
+      }}
+    >
       {children}
     </ChatContext.Provider>
   );

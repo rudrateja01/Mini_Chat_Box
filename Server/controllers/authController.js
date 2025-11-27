@@ -33,9 +33,9 @@ Admin();
 export const signup = async (req, res) => {
   try {
     console.log("REQ BODY =>", req.body);
-    const { firstname, lastname, email, password, confirmpassword } = req.body;
+    const { firstname, lastname, email, password, confirmpassword ,role} = req.body;
 
-    if (!firstname || !lastname || !email || !password || !confirmpassword) {
+    if (!firstname || !lastname || !email || !password || !confirmpassword || !role) {
       return res.status(400).json({ message: "All fields required" });
     }
 
@@ -48,6 +48,11 @@ export const signup = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
+    
+    const existingAdmin = await User.findOne({ role });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "Admin already Exists" });
+    }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -57,7 +62,8 @@ export const signup = async (req, res) => {
       firstname, 
       lastname, 
       email, 
-      password: hashedPassword 
+      password: hashedPassword,
+      role
     });
 
     // Send response
@@ -67,7 +73,8 @@ export const signup = async (req, res) => {
         id: user._id,
         firstname: user.firstname,
         lastname: user.lastname,
-        email: user.email
+        email: user.email,
+        role:user.role
       }
     });
 
@@ -103,7 +110,7 @@ export const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        // role: user.role,
+         role: user.role,
       },
     });
   } catch (err) {

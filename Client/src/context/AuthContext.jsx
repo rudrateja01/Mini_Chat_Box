@@ -1,8 +1,12 @@
-import { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useReducer, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-export const authReducer = (state, action) => {
+const initialState = {
+  user: null,
+};
+
+const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
       return { user: action.payload };
@@ -14,14 +18,18 @@ export const authReducer = (state, action) => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, { user: null });
+  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [loading, setLoading] = React.useState(true); // NEW
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      dispatch({ type: "LOGIN", payload: user });
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      dispatch({ type: "LOGIN", payload: JSON.parse(storedUser) });
     }
+    setLoading(false); // DONE loading
   }, []);
+
+  if (loading) return null; // or a spinner
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>
