@@ -16,7 +16,7 @@ export default function ContactCenter() {
     const loadTeammates = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:4000/api/team", { // <-- backend URL
+        const res = await fetch("http://localhost:4000/api/team", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -70,7 +70,7 @@ export default function ContactCenter() {
   };
 
   const latestMessage = (ticket) =>
-    ticket.messages?.length > 0
+    ticket.messages?.length
       ? ticket.messages[ticket.messages.length - 1].text.slice(0, 30) + "..."
       : "No messages yet";
 
@@ -84,93 +84,121 @@ export default function ContactCenter() {
         {loading && <p>Loading chats...</p>}
         {!loading && (!Array.isArray(tickets) || tickets.length === 0) && <p>No chats found.</p>}
 
-        {Array.isArray(tickets) && tickets.map((t, idx) => {
-          const nameParts = t.user?.name?.split(" ") || [];
-          const avatarText = ((nameParts[0]?.[0] || "") + (nameParts[1]?.[0] || "")).toUpperCase();
-          return (
-            <div
-              key={t._id}
-              className={`cc-chat-item ${selectedTicket?._id === t._id ? "active" : ""}`}
-              onClick={() => selectTicket(t)}
-            >
-              <div className="cc-chat-avatar">{avatarText}</div>
-              <div className="cc-chat-info">
-                <p className="cc-chat-title">Chat {idx + 1}</p>
-                <p className="cc-chat-preview">{latestMessage(t)}</p>
+        {Array.isArray(tickets) &&
+          tickets.map((t, idx) => {
+            const nameParts = t.user?.name?.split(" ") || [];
+            const avatarText =
+              ((nameParts[0]?.[0] || "") + (nameParts[1]?.[0] || "")).toUpperCase();
+            return (
+              <div
+                key={t._id}
+                className={`cc-chat-item ${selectedTicket?._id === t._id ? "active" : ""}`}
+                onClick={() => selectTicket(t)}
+              >
+                <div className="cc-chat-avatar">{avatarText}</div>
+                <div className="cc-chat-info">
+                  <p className="cc-chat-title">Chat {idx + 1}</p>
+                  <p className="cc-chat-preview">{latestMessage(t)}</p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
 
       {/* CENTER PANEL */}
-      <div className="cc-center">
-        {selectedTicket ? (
-          <>
-            <div className="cc-center-header">
-              <span className="ticket-id">Ticket: {selectedTicket.ticketId}</span>
-              <Icon icon={homeIcon} className="home-icon" />
-            </div>
+     <div className="cc-center">
+  {selectedTicket ? (
+    <>
+      {/* TOP BAR */}
+      <div className="cc-center-header">
+        <span className="ticket-id">Ticket: {selectedTicket.ticketId}</span>
+        <Icon icon={homeIcon} className="home-icon" />
+      </div>
 
-            <div className="cc-chat-messages">
-              {Array.isArray(messages) && messages.length === 0 ? (
-                <p className="no-messages">No messages yet</p>
-              ) : (
-                Array.isArray(messages) &&
-                messages.map((msg, idx) => {
-                  const date = new Date(msg.createdAt).toLocaleDateString();
-                  return (
-                    <div key={idx} className="chat-msg-wrapper">
-                      <div className="chat-msg-content">
-                        <p className={`chat-msg ${msg.sender === "admin" ? "sent" : "received"}`}>
-                          {msg.text}
-                        </p>
-                        <span className="chat-date">{date}</span>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-
-            <div className="cc-chat-input">
-              <textarea
-                placeholder="Type here..."
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && replyText.trim()) {
-                    sendMessage(replyText);
-                    setReplyText("");
-                  }
-                }}
-              />
-              <span
-                className="send-icon"
-                onClick={() => {
-                  if (!replyText.trim()) return;
-                  sendMessage(replyText);
-                  setReplyText("");
-                }}
-              >
-                <Icon icon={sendIcon} width="20" height="20" />
-              </span>
-            </div>
-          </>
+      {/* CHAT MESSAGES */}
+      <div className="cc-chat-messages">
+        {(selectedTicket.messages || []).length === 0 ? (
+          <p className="no-messages">No messages yet</p>
         ) : (
-          <p className="cc-empty">Select a chat to view messages</p>
+          (selectedTicket.messages || []).map((msg, idx) => {
+            const rawDate = msg.createdAt ? new Date(msg.createdAt) : new Date();
+            const msgDate = rawDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+            const prevMsg = selectedTicket.messages[idx - 1];
+            const prevDate = prevMsg
+              ? new Date(prevMsg.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : null;
+
+            const nameParts = selectedTicket.user?.name?.split(" ") || [];
+            const avatarText = (
+              (nameParts[0]?.[0] || "") + (nameParts[1]?.[0] || "")
+            ).toUpperCase();
+
+            return (
+              <React.Fragment key={idx}>
+                {msgDate !== prevDate && (
+                  <div className="chat-date-divider">{msgDate}</div>
+                )}
+                <div className="chat-msg-wrapper">
+                  <div className="chat-avatar">{avatarText}</div>
+                  <div className="chat-msg-content">
+                    <p className="chat-index">Chat {idx + 1}</p>
+                    <p className={`chat-msg ${msg.sender === "admin" ? "sent" : "received"}`}>
+                      {msg.text}
+                    </p>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })
         )}
       </div>
+
+      {/* INPUT BOX */}
+      <div className="cc-chat-input">
+        <textarea
+          placeholder="Type here..."
+          value={replyText}
+          onChange={(e) => setReplyText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && replyText.trim()) {
+              console.log("Send:", replyText);
+              setReplyText("");
+            }
+          }}
+        />
+        <span
+          className="send-icon"
+          onClick={() => {
+            if (!replyText.trim()) return;
+            console.log("Send:", replyText);
+            setReplyText("");
+          }}
+        >
+          <Icon icon={sendIcon} width="20" height="20" />
+        </span>
+      </div>
+    </>
+  ) : (
+    <p className="cc-empty">Select a chat to view messages</p>
+  )}
+</div>
+
+
 
       {/* RIGHT PANEL */}
       <div className="cc-right">
         <div className="cc-header">
           <div className="cc-avatar-big">
-            {selectedTicket?.user?.name
-              ?.split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()}
+            {selectedTicket?.user?.name?.split(" ").map((n) => n[0]).join("").toUpperCase()}
           </div>
           <h3 className="cc-chat-label">Chat</h3>
         </div>
