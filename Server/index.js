@@ -8,6 +8,7 @@ import ticketRoutes from "./routes/ticketRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
+import analyticsRoutes from "./routes/analytics.js";
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -26,6 +27,7 @@ app.use("/api/tickets", ticketRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/team", teamRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.get("/", (req, res) => res.json({ ok: true }));
 

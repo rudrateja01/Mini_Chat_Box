@@ -105,7 +105,7 @@ export const assignTicket = async (req, res) => {
     const { assignedId } = req.body;       // get user ID from request body
 
     // Find the ticket in the database
-    const ticket = await Ticket.findOne({ ticketId });
+    const ticket = await Ticket.findById({ ticketId: req.params.ticketId });
     if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
     // Find the user to assign

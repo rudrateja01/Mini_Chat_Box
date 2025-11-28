@@ -8,7 +8,7 @@ import AdminDashboard from "./pages/Admin/Dashboard/Dashboard";
 import ContactCenter from "./pages/Admin/ContactCenter/ContactCenter";
 import { ChatProvider } from "./context/ChatContext";
 
-import Analytics from "./pages/Admin/Analytics";
+import Analytics from "./pages/Admin/Analytics/Analytics";
 import ChatBot from "./pages/Admin/ChatBot";
 import TeamManagement from "./pages/Admin/TeamManagement";
 import Settings from "./pages/Admin/Settings";

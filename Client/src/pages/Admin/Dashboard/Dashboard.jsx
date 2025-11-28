@@ -11,6 +11,8 @@ export default function Dashboard() {
   const [activeFilter, setActiveFilter] = useState("all"); // Track selected filter
   const limit = 8; // tickets per page
 
+
+
   // Fetch tickets from backend
   useEffect(() => {
     const fetchTickets = async () => {
@@ -76,6 +78,7 @@ export default function Dashboard() {
       .join("")
       .toUpperCase();
   };
+  
 
   return (
     <div className="dashboard-root">
