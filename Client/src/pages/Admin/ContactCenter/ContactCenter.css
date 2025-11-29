@@ -529,68 +529,65 @@
    STATUS FIELD
 =========================== */
 /* STATUS BOX ROW */
-
-.cc-single-status-box {
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  background: #f5f5f5;
+.cc-ticket-status-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
   cursor: pointer;
-  margin-top: 15px;
+  margin-top: 10px;
+  margin-bottom: 8px;
 }
 
-.cc-status-left {
+.cc-ticket-status-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.cc-status-icon {
-  font-size: 22px;
+.cc-status-icon{
+  color: #808080;
+  font-size: 25px;
+}
+.cc-ticket-status-left .cc-title {
+  font-size: 18px;
+  margin: 0;
   color: #808080;
 }
 
-.cc-status-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #808080;
-}
-
-.cc-chevron {
-  width: 40px;
-  height: 35px;
-  font-size: 30px;
-  border-radius: 8px;
+.cc-ticket-status-right {
   display: flex;
-  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  color: #808080;
+      width: 40px;
+    height: 35px;
+    font-size: 30px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #808080;
 }
 
-/* DROPDOWN */
 .cc-status-dropdown {
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: white;
-  margin-top: 6px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   overflow: hidden;
+  background-color: #fff;
+  margin-top: 4px;
 }
 
 .cc-status-option {
-  padding: 10px 12px;
+  padding: 10px 16px;
   cursor: pointer;
-  font-size: 15px;
   color: #808080;
 }
 
 .cc-status-option:hover {
-  background: #eee;
+  background-color: #f0f0f0;
 }
-
 
 
 /* ================== pop-up ==================== */

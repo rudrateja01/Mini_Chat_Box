@@ -52,10 +52,12 @@ export default function ContactCenter() {
   }, []);
 
   // Assign teammate
-  const handleAssign = async (id) => {
+  const handleAssign = async (assignedId) => {
     if (!selectedTicket) return;
+
     try {
       const token = localStorage.getItem("token");
+
       const res = await fetch(
         `http://localhost:4000/api/tickets/${selectedTicket.ticketId}/assign`,
         {
@@ -64,11 +66,18 @@ export default function ContactCenter() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ assignedId: id }),
+          body: JSON.stringify({ assignedId }),
         }
       );
-      const updatedTicket = await res.json();
-      selectTicket(updatedTicket);
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Assign failed:", data.message);
+        return;
+      }
+
+      selectTicket(data.ticket);
     } catch (err) {
       console.error("Failed to assign teammate:", err);
     }
@@ -330,8 +339,10 @@ export default function ContactCenter() {
       </div>
 
       {/* RIGHT PANEL */}
+      {/* ================= RIGHT PANEL ================= */}
       <div className="cc-right">
         <div className="cc-right-scroll">
+          {/* USER INFO */}
           <div className="cc-header">
             <div className="cc-avatar-big">
               {selectedTicket?.user?.name
@@ -349,28 +360,26 @@ export default function ContactCenter() {
               <Icon icon="mdi:account" className="detail-icon" />
               <span>{selectedTicket?.user?.name || "N/A"}</span>
             </div>
-
             <div className="detail-box">
               <Icon icon="mdi:phone" className="detail-icon" />
               <span>+91{selectedTicket?.user?.phone || "N/A"}</span>
             </div>
-
             <div className="detail-box">
               <Icon icon="mdi:email" className="detail-icon" />
               <span>{selectedTicket?.user?.email || "N/A"}</span>
             </div>
           </div>
 
+          {/* ================= TEAMMATES ================= */}
           <h2 className="cc-title">Teammates</h2>
 
-          {/* NEW SINGLE-ROW TEAMMATE BOX */}
           <div className="cc-teammate-row">
             <div className="cc-teammate-left">
               <div className="cc-avatar-small">
                 {assignedTeammate?.Username?.split(" ")
                   .map((n) => n[0])
                   .join("")
-                  .toUpperCase()}
+                  .toUpperCase() || "NA"}
               </div>
               <p className="cc-teammate-name">
                 {assignedTeammate?.Username || "Not Assigned"}
@@ -392,9 +401,9 @@ export default function ContactCenter() {
                   key={tm._id}
                   className="dropdown-option"
                   onClick={() => {
-                    handleAssign(tm._id);
-                    setAssignedTeammate(tm);
-                    setDropdownOpen(false);
+                    handleAssign(tm._id); // assign teammate
+                    setAssignedTeammate(tm); // update UI
+                    setDropdownOpen(false); // close dropdown
                   }}
                 >
                   <div className="cc-avatar-small">
@@ -411,51 +420,55 @@ export default function ContactCenter() {
             </div>
           )}
 
-          <h2 className="cc-title">Ticket Status</h2>
-          {/* TICKET STATUS BOX */}
-          <div
-            className="cc-single-status-box"
-            onClick={() => setStatusOpen(!statusOpen)}
-          >
-            <div className="cc-status-left">
-              <Icon icon="mdi:ticket" className="cc-status-icon" />
-              <span className="cc-status-text">
-                {selectedTicket?.status === "resolved"
-                  ? "Resolved"
-                  : "Unresolved"}
-              </span>
+          {/* ================= TICKET STATUS ================= */}
+          {/* ================= TICKET STATUS ================= */}
+          <div className="cc-ticket-status-container">
+            <div className="cc-ticket-status-box">
+              <div className="cc-ticket-status-left">
+                <Icon icon="mdi:ticket" className="cc-status-icon" />
+                <h2 className="cc-title">Ticket Status</h2>
+                
+              </div>
+              <div
+                className="cc-ticket-status-right"
+                onClick={() => setStatusOpen((prev) => !prev)}
+              >
+                <Icon icon="mdi:chevron-down" />
+              </div>
             </div>
 
-            <Icon icon="mdi:chevron-down" className="cc-chevron" />
+            {/* Dropdown Options */}
+            {statusOpen && (
+              <div className="cc-status-dropdown">
+                <div
+                  className={`cc-status-option ${
+                    selectedTicket?.status === "resolved" ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    handleStatusUpdate("resolved");
+                    setStatusOpen(false);
+                  }}
+                >
+                  Resolved
+                </div>
+                <hr />
+                <div
+                  className={`cc-status-option ${
+                    selectedTicket?.status === "unresolved" ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    handleStatusUpdate("unresolved");
+                    setStatusOpen(false);
+                  }}
+                >
+                  Unresolved
+                </div>
+              </div>
+            )}
           </div>
-
-          {/* DROPDOWN OPTIONS */}
-          {statusOpen && (
-            <div className="cc-status-dropdown">
-              <div
-                className="cc-status-option"
-                onClick={() => {
-                  handleStatusUpdate("resolved");
-                  setStatusOpen(false);
-                }}
-              >
-                Resolved
-              </div>
-              <hr />
-
-              <div
-                className="cc-status-option"
-                onClick={() => {
-                  handleStatusUpdate("unresolved");
-                  setStatusOpen(false);
-                }}
-              >
-                Unresolved
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
       {showPopup && (
         <div className="assign-popup-overlay">
           <div className="assign-popup">

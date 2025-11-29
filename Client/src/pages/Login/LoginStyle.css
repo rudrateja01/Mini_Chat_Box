@@ -17,9 +17,9 @@ body {
   width: 100%;
 }
 
-/* Left Panel */
+/* Left Panel (Content/Form - Now 70%) */
 .left-panel {
-  flex: 1;
+  flex: 7; /* Changed from flex: 1 to occupy 70% of the space (7 / (7+3)) */
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -151,9 +151,9 @@ body {
   text-decoration: underline;
 }
 
-/* Right Panel */
+/* Right Panel (Image - Now 30%) */
 .right-panel {
-  flex: 1;
+  flex: 3; /* Changed from flex: 1 to occupy 30% of the space (3 / (7+3)) */
   background-color: #F3F4F6;
   display: flex;
   justify-content: center;

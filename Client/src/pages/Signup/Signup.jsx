@@ -1,114 +1,129 @@
-import React, { useState } from "react";
 import "./SignupStyle.css";
-import useSignup from "../../Hooks/useSignup";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../../context/AuthContext";
-import hubly from "../../assets/logos/hubly.png";
+import useSignup from "../../Hooks/useSignup";
 import man from "../../assets/logos/man.png";
+import Hubly from "../../assets/logos/hubly.png";
 
-const Signup = () => {
-  // const { signup } = useAuth();
-  const {signup,error} = useSignup();
+export default function Signup() {
+  const { signup, error } = useSignup();
   const navigate = useNavigate();
 
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmPassword] = useState("");
-
-  // const {signup,error} = useSignup();
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(email,password);
-    const result = await signup(firstname, lastname, email, password, confirmpassword);
-     if (!result) return;
-     navigate("/login"); 
 
-    setFirstname("");
-    setLastname("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
+    try {
+      const user = await signup(firstname, lastname, email, password, confirmPassword);
+
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate("/admin");
+      }
+    } catch (err) {
+      alert(err?.message || "Signup failed");
+    }
   };
+
   return (
-    <div className="main-form">
-      {/* <img src={hubly} id="logo" alt="" /> */}
-      <div className="left">
-        <div className="form">
-          <form>
-            <h1>Create an account </h1><span className="signin-link" onClick={()=>navigate("/login")}>sign in instead</span>
-            <div className="field">
-              <label htmlFor="">First name : </label>
-              <input
-                type="string"
-                onChange={(e) => {
-                  setFirstname(e.target.value);
-                }}
-                value={firstname}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="">Last name : </label>
-              <input
-                type="string"
-                onChange={(e) => {
-                  setLastname(e.target.value);
-                }}
-                value={lastname}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="">Email : </label>
-              <input
-                type="email"
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                value={email}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="">Password : </label>
-              <input
-                type="password"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                value={password}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="">Confirm Password : </label>
-              <input
-                type="password"
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                }}
-                value={confirmpassword}
-              />
-            </div>
-            <p>
-              By creating an account, I agree to our <span>Terms of use</span>
-              <br />
-              and <span>Privacy Policy</span>
-            </p>
-            <button onClick={handleSubmit}>Create an account</button>
-          </form>
+    <div className="container">
+      {/* Left Panel */}
+      <div className="left-panel">
+        <div className="logo">
+          <span className="logo-text"><img src={Hubly} alt="" /></span>
         </div>
-        <p>
-          This site is protected by reCAPTCHA and the
-          <span>Google Privacy Policy</span> and <span>Terms of Service</span>
-          apply.
-        </p>
+
+        <div className="form-scroll-wrapper">
+          <div className="form-container">
+            <div className="form-header">
+              <h1>Create an account</h1>
+              <a href="/login">Sign in instead</a>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+
+              {/* Firstname */}
+              <div className="form-group">
+                <label htmlFor="firstname">Firstname</label>
+                <input
+                  type="text"
+                  id="firstname"
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Lastname */}
+              <div className="form-group">
+                <label htmlFor="lastname">Lastname</label>
+                <input
+                  type="text"
+                  id="lastname"
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Email */}
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Password */}
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Confirm Password */}
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="submit-btn">Create an account</button>
+            </form>
+
+            {error && <p className="error-msg">{error}</p>}
+          </div>
+        </div>
+
+        <div className="footer-text">
+          This site is protected by reCAPTCHA and Google{" "}
+          <span>Privacy Policy</span> and <span>Terms of Service</span> apply.
+        </div>
       </div>
 
-      <div className="right">
-        <img src={man} alt="" />
+      {/* Right Panel */}
+      <div className="right-panel">
+        <img src={man} alt="Man working on laptop" className="feature-image" />
       </div>
     </div>
   );
-};
-
-export default Signup;
+}

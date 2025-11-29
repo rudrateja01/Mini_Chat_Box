@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+// Assuming getAnalytics is defined in the correct relative path
 import { getAnalytics } from "../../../api/analytics";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import "./Analytics.css";
 
@@ -10,7 +12,10 @@ export default function Analytics() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const analytics = await getAnalytics();
+      // Simulate API call delay for demonstration if needed, otherwise this is fine
+      // *** IMPORTANT: Make sure getAnalytics returns an object with a non-empty array
+      //    for the missingChatsHistory key for the chart to show.
+      const analytics = await getAnalytics(); 
       console.log("Analytics Data →", analytics);
       setData(analytics);
       setLoading(false);
@@ -21,18 +26,39 @@ export default function Analytics() {
   if (loading) return <p>Loading...</p>;
   if (!data) return <p>No data available yet</p>;
 
+  // Data structure for the Pie Chart
   const resolvedData = [
     { name: "Resolved", value: data.resolvedPercent },
     { name: "Unresolved", value: 100 - data.resolvedPercent },
   ];
 
-  const COLORS = ["#28a745", "#ccc"]; // green + gray
+  const COLORS = ["#28a745", "#ccc"]; // green + gray for resolved/unresolved
 
   return (
     <div className="analytics-root">
       <h3 className="analytics-title">Analytics</h3>
 
-      {/* Average Reply Time */}
+      {/* Missing Chats Line Chart (The component will render this only if data.missingChatsHistory is a non-empty array) */}
+      {data.missingChatsHistory && data.missingChatsHistory.length > 0 && (
+        <div className="linechart-card">
+          <h2>Missing Chats</h2>
+
+          <LineChart width={500} height={200} data={data.missingChatsHistory}>
+            <Line
+              type="monotone"
+              dataKey="value" // The value on the Y-axis (number of chats)
+              stroke="#184E7F"
+              strokeWidth={3}
+            />
+            <Tooltip />
+            <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+            <XAxis dataKey="day" /> {/* The X-axis data (e.g., Week 1, Day 1) */}
+            <YAxis />
+          </LineChart>
+        </div>
+      )}
+
+      {/* --- Average Reply Time --- */}
       <div className="analytics-row">
         <div className="analytics-left">
           <h2>Average Reply Time</h2>
@@ -46,7 +72,7 @@ export default function Analytics() {
         <h1 className="analytics-value">{data.avgReplyTime} secs</h1>
       </div>
 
-      {/* Resolved Tickets */}
+      {/* --- Resolved Tickets Pie Chart --- */}
       <div className="analytics-row">
         <div className="analytics-left">
           <h2>Resolved Tickets</h2>
@@ -70,6 +96,7 @@ export default function Analytics() {
               <Cell key={index} fill={COLORS[index]} />
             ))}
           </Pie>
+          {/* Custom text element to display the percentage in the center of the donut chart */}
           <text
             x="50%"
             y="50%"
@@ -85,7 +112,7 @@ export default function Analytics() {
         </PieChart>
       </div>
 
-      {/* Total Chats */}
+      {/* --- Total Chats --- */}
       <div className="analytics-row">
         <div className="analytics-left">
           <h2 className="Total-Chats">Total Chats</h2>

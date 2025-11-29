@@ -4,25 +4,29 @@ import axios from "axios";
 const useSignup = () => {
   const [error, setError] = useState(null);
 
-  const signup = async (firstname, lastname, email, password, confirmpassword) => {
-  setError(null);
+  const signup = async (firstname, lastname, email, password, confirmpassword, role = "user") => {
+    setError(null);
 
-  try {
-    const res = await axios.post("http://localhost:4000/api/auth/signup", {
-      firstname,
-      lastname,
-      email,
-      password,
-      confirmpassword,   // ← backend expects this
-    });
+    try {
+      const res = await axios.post("http://localhost:4000/api/auth/signup", {
+        firstname,
+        lastname,
+        email,
+        password,
+        confirmpassword,
+        role, // default to "user"
+      });
 
-    return res.data;  // ✅ you return it, but you never save in localStorage
-  } catch (err) {
-    console.log("SIGNUP ERROR => ", err.response.data);
-    setError(err.response?.data?.message || "Signup failed");
-  }
-};
-
+      if (res.status === 201) {
+        // Return user object including role
+        return res.data.user;
+      }
+    } catch (err) {
+      console.log("SIGNUP ERROR =>", err.response?.data);
+      setError(err.response?.data?.message || "Signup failed");
+      return null;
+    }
+  };
 
   return { signup, error };
 };
