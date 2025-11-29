@@ -11,7 +11,7 @@ import { ChatProvider } from "./context/ChatContext";
 import Analytics from "./pages/Admin/Analytics/Analytics";
 import ChatBot from "./pages/Admin/ChatBot/ChatBot";
 import TeamManagement from "./pages/Admin/Team/TeamManagement";
-import Settings from "./pages/Admin/Settings";
+import Settings from "./pages/Admin/Settings/Settings";
 
 import AdminLayout from "./components/Layouts/AdminLayout";
 import { AuthProvider } from "./context/AuthContext";
