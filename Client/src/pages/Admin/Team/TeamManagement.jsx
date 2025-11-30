@@ -4,89 +4,100 @@ import "./TeamManagement.css";
 import { Icon } from "@iconify/react";
 
 export default function TeamPage() {
-  const [team, setTeam] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [deletePopup, setDeletePopup] = useState(false);
-  const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const [addPopup, setAddPopup] = useState(false);
   const [newUser, setNewUser] = useState({
-    Username: "",
-    EmailID: "",
-    role: "member",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password:"",
+    confirmpassword:"",
+    role: "user",
   });
 
   const token = localStorage.getItem("token");
 
+  // Fetch users from API
   useEffect(() => {
-    const fetchTeam = async () => {
+    const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:4000/api/team", {
+        const res = await axios.get("http://localhost:4000/api/auth/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setTeam(res.data.teams || []);
+        setUsers(res.data || []); // use users array from API
+
       } catch (err) {
-        console.error("Failed to load team:", err);
+        console.error("Failed to load users:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchTeam();
+    fetchUsers();
   }, [token]);
 
-  const handleAddMember = async () => {
+  // Add new user
+  const handleAddUser = async () => {
     try {
-      const res = await axios.post("http://localhost:4000/api/team", newUser, {
+      const res = await axios.post("http://localhost:4000/api/auth/signup", newUser, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setTeam([res.data.team, ...team]); // Add to UI
-      setAddPopup(false); // Close popup
+      setUsers([ ...users,res.data.user]); // Add to UI
+      setAddPopup(false);
 
       // Clear fields
       setNewUser({
-        Username: "",
-        EmailID: "",
-        role: "member",
+        firstname: "",
+        lastname: "",
+        email: "",
+        password:"",
+        confirmpassword:"",
+        role: "user",
       });
     } catch (err) {
-      console.error("Failed to add member:", err);
+      console.error("Failed to add user:", err);
     }
   };
 
+ // Delete user
   const handleDelete = async () => {
-    if (!selectedMember) return;
+    if (!selectedUser) return;
     try {
       await axios.delete(
-        `http://localhost:4000/api/team/${selectedMember._id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `http://localhost:4000/api/auth/users/${selectedUser._id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+      setUsers(users.filter((u) => u._id !== selectedUser._id));
       setDeletePopup(false);
-      setSelectedMember(null);
-      setTeam(team.filter((m) => m._id !== selectedMember._id));
+      setSelectedUser(null);
+
     } catch (err) {
-      console.error("Failed to delete:", err);
+      console.error("Failed to delete user:", err);
     }
   };
 
   if (loading) return <p>Loading...</p>;
 
-  const admin = team.find((t) => t.role === "admin");
-  const members = team.filter((t) => t.role !== "admin");
+  // Separate admin and regular users
+  const admin = users.find((u) => u.role === "admin");
+  const regularUsers = users.filter((u) => u.role === "user");
 
-  const getInitials = (name) => {
-    const words = name.split(" ");
-    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
-    return (words[0][0] + words[1][0]).toUpperCase();
+  // Get initials
+  const getInitials = (u) => {
+    const first = u.firstname?.charAt(0) || "";
+    const last = u.lastname?.charAt(0) || "";
+    return (first + last).toUpperCase();
   };
 
   return (
     <div className="team-page">
-      <h2 className="team-title">Team</h2>
+      <h2 className="team-title">Users</h2>
 
       {/* TABLE */}
       <div className="team-table">
@@ -104,35 +115,27 @@ export default function TeamPage() {
 
         {/* ADMIN ROW */}
         {admin && (
-          <div className="table-row">
+          <div className="table-row" key={admin._id}>
             <div className="row-left">
-              <div className="avatar-initials admin-avatar">
-                {getInitials(admin.Username)}
-              </div>
-              <span className="col-name">{admin.Username}</span>
-              <span className="col-phone" id="phone">
-                ---
-              </span>
-              <span className="col-email">{admin.EmailID}</span>
+              <div className="avatar-initials admin-avatar">{getInitials(admin)}</div>
+              <span className="col-name">{admin.firstname} {admin.lastname}</span>
+              <span className="col-phone">---</span>
+              <span className="col-email">{admin.email}</span>
               <span className="col-role">{admin.role}</span>
             </div>
             <div className="row-right no-actions"></div>
           </div>
         )}
 
-        {/* MEMBER ROWS */}
-        {members.map((m) => (
-          <div className="table-row" key={m._id}>
+        {/* REGULAR USER ROWS */}
+        {regularUsers.map((u) => (
+          <div className="table-row" key={u._id}>
             <div className="row-left">
-              <div className="avatar-initials member-avatar">
-                {getInitials(m.Username)}
-              </div>
-              <span className="col-name">{m.Username}</span>
-              <span className="col-phone" id="phone">
-                ---
-              </span>
-              <span className="col-email">{m.EmailID}</span>
-              <span className="col-role">{m.role}</span>
+              <div className="avatar-initials member-avatar">{getInitials(u)}</div>
+              <span className="col-name">{u.firstname} {u.lastname}</span>
+              <span className="col-phone">---</span>
+              <span className="col-email">{u.email}</span>
+              <span className="col-role">{u.role}</span>
             </div>
             <div className="row-right action-buttons">
               <Icon icon="mdi:pencil" className="edit-btn" />
@@ -140,7 +143,7 @@ export default function TeamPage() {
                 icon="mdi:delete"
                 className="delete-btn"
                 onClick={() => {
-                  setSelectedMember(m);
+                  setSelectedUser(u);
                   setDeletePopup(true);
                 }}
               />
@@ -149,76 +152,87 @@ export default function TeamPage() {
         ))}
       </div>
 
-      {/* ADD MEMBER BUTTON */}
-      <button className="add-member-btn"
-      onClick={() => setAddPopup(true)}>
+      {/* ADD USER BUTTON */}
+      <button className="add-member-btn" onClick={() => setAddPopup(true)}>
         <Icon icon="mdi:plus-circle" className="plus-icon" />
-        Add Team Member
+        Add User
       </button>
 
-      {/* ADD MEMBER POPUP */}
+      {/* ADD USER POPUP */}
       {addPopup && (
         <div className="add-popup">
-          <h2>Add Team Member</h2>
+          <h2>Add User</h2>
           <p className="popup-desc">
             Talk with colleagues in a group chat. Messages in this group are
-            only visible to its participants. New teammates may only be invited
-            by the administrators.
+            only visible to its participants. New users may only be invited
+            by administrators.
           </p>
 
-          <label>Username</label>
+          <label>First Name</label>
           <input
             type="text"
-            value={newUser.Username}
-            onChange={(e) =>
-              setNewUser({ ...newUser, Username: e.target.value })
-            }
-            placeholder="Enter name"
+            value={newUser.firstname}
+            onChange={(e) => setNewUser({ ...newUser, firstname: e.target.value })}
+            placeholder="Enter first name"
           />
 
-          <label>Email ID</label>
+          <label>Last Name</label>
+          <input
+            type="text"
+            value={newUser.lastname}
+            onChange={(e) => setNewUser({ ...newUser, lastname: e.target.value })}
+            placeholder="Enter last name"
+          />
+
+          <label>Email</label>
           <input
             type="email"
-            value={newUser.EmailID}
-            onChange={(e) =>
-              setNewUser({ ...newUser, EmailID: e.target.value })
-            }
+            value={newUser.email}
+            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
             placeholder="Enter email"
           />
 
-          <label>Designation</label>
+          <label>Password</label>
+          <input
+            type="password"
+            value={newUser.password}
+            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            placeholder="Enter password"
+          />
+
+          <label>confirmpassword</label>
+          <input
+            type="password"
+            value={newUser.confirmpassword}
+            onChange={(e) => setNewUser({ ...newUser, confirmpassword: e.target.value })}
+            placeholder="Enter confirmpassword"
+          />
+
+          <label>Role</label>
           <select
             value={newUser.role}
             onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
           >
-            <option value="member">Member</option>
+            <option value="user">User</option>
             <option value="admin">Admin</option>
           </select>
 
           <div className="popup-buttons bottom-right">
-            <button className="cancel" onClick={() => setAddPopup(false)}>
-              Cancel
-            </button>
-            <button className="confirm" onClick={handleAddMember}>
-              Save
-            </button>
+            <button className="cancel" onClick={() => setAddPopup(false)}>Cancel</button>
+            <button className="confirm" onClick={handleAddUser}>Save</button>
           </div>
         </div>
       )}
 
       {/* DELETE POPUP */}
-      {deletePopup && selectedMember && (
+      {deletePopup && selectedUser && (
         <div className="delete-popup">
           <p>
-            This teammate <b>{selectedMember.Username}</b> will be deleted.
+            This user <b>{selectedUser.firstname} {selectedUser.lastname}</b> will be deleted.
           </p>
           <div className="popup-buttons">
-            <button className="cancel" onClick={() => setDeletePopup(false)}>
-              Cancel
-            </button>
-            <button className="confirm" onClick={handleDelete}>
-              Confirm
-            </button>
+            <button className="cancel" onClick={() => setDeletePopup(false)}>Cancel</button>
+            <button className="confirm" onClick={handleDelete}>Confirm</button>
           </div>
         </div>
       )}

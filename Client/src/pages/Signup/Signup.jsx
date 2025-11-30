@@ -19,7 +19,13 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      const user = await signup(firstname, lastname, email, password, confirmPassword);
+      const user = await signup(
+        firstname,
+        lastname,
+        email,
+        password,
+        confirmPassword
+      );
 
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
@@ -35,7 +41,9 @@ export default function Signup() {
       {/* Left Panel */}
       <div className="left-panel">
         <div className="logo">
-          <span className="logo-text"><img src={Hubly} alt="" /></span>
+          <span className="logo-text">
+            <img src={Hubly} alt="" />
+          </span>
         </div>
 
         <div className="form-scroll-wrapper">
@@ -46,7 +54,6 @@ export default function Signup() {
             </div>
 
             <form onSubmit={handleSubmit}>
-
               {/* Firstname */}
               <div className="form-group">
                 <label htmlFor="firstname">Firstname</label>
@@ -106,8 +113,22 @@ export default function Signup() {
                   required
                 />
               </div>
+              <div className="form-group terms-checkbox">
+                <label className="terms-label" >
+                  <input
+                    type="checkbox"
+                    required
+                    style={{ marginRight: "8px" }}
+                  />
+                 <p className="terms-text"> By creating an account, I agree to our{" "}
+                  <span>Terms of Use</span><br /> and{" "}
+                  <span>Privacy Policy</span></p>
+                </label>
+              </div>
 
-              <button type="submit" className="submit-btn">Create an account</button>
+              <button type="submit" className="submit-btn">
+                Create an account
+              </button>
             </form>
 
             {error && <p className="error-msg">{error}</p>}

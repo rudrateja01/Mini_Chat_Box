@@ -24,31 +24,32 @@ export default function ContactCenter() {
 
   // Load teammates
   useEffect(() => {
-    const loadTeammates = async () => {
+    const loadUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:4000/api/team", {
+        const res = await fetch("http://localhost:4000/api/auth/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
-        // Correctly get the teams array
-        const teamArray = Array.isArray(data.teams) ? data.teams : [];
-        setTeammates(teamArray);
 
-        // Set first teammate as assigned by default
-        if (teamArray.length > 0) {
-          setAssignedTeammate(teamArray[0]);
+        const data = await res.json();
+        console.log("API RESPONSE:", data);
+
+        // Extract users array
+        const usersArray = Array.isArray(data) ? data : [];
+
+        setTeammates(usersArray); // rename to setUsers if needed
+
+        // Set default selection (optional)
+        if (usersArray.length > 0) {
+          setAssignedTeammate(usersArray[0]); // rename also if needed
         }
-        // setTeammates([
-        //   { _id: "1", Username: "Alice", Designation: "member" },
-        //   { _id: "2", Username: "Bob", Designation: "member" },
-        // ]);
       } catch (err) {
-        console.error("Failed to load teammates:", err);
+        console.error("Failed to load users:", err);
         setTeammates([]);
       }
     };
-    loadTeammates();
+
+    loadUsers();
   }, []);
 
   // Assign teammate
@@ -373,50 +374,63 @@ export default function ContactCenter() {
           {/* ================= TEAMMATES ================= */}
           <h2 className="cc-title">Teammates</h2>
 
-          <div className="cc-teammate-row">
+          <div
+            className="cc-teammate-row"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
             <div className="cc-teammate-left">
               <div className="cc-avatar-small">
-                {assignedTeammate?.Username?.split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase() || "NA"}
+                {assignedTeammate
+                  ? `${assignedTeammate.firstname?.charAt(0) || ""}${
+                      assignedTeammate.lastname?.charAt(0) || ""
+                    }`.toUpperCase()
+                  : "NA"}
               </div>
+
               <p className="cc-teammate-name">
-                {assignedTeammate?.Username || "Not Assigned"}
+                {assignedTeammate
+                  ? `${assignedTeammate.firstname} ${assignedTeammate.lastname}`
+                  : "Select User"}
               </p>
             </div>
 
-            <div
-              className="cc-teammate-dropdown-btn"
-              onClick={() => setDropdownOpen((p) => !p)}
-            >
+            <div className="cc-teammate-dropdown-btn">
               <Icon icon="mdi:chevron-down" />
             </div>
           </div>
 
+          {/* DROPDOWN */}
           {dropdownOpen && (
-            <div className="dropdown-options">
-              {teammates.map((tm) => (
-                <div
-                  key={tm._id}
-                  className="dropdown-option"
-                  onClick={() => {
-                    handleAssign(tm._id); // assign teammate
-                    setAssignedTeammate(tm); // update UI
-                    setDropdownOpen(false); // close dropdown
-                  }}
-                >
-                  <div className="cc-avatar-small">
-                    {tm.Username?.split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
-                  </div>
-                  <div className="dropdown-info">
-                    <span className="dropdown-name">{tm.Username}</span>
-                  </div>
-                </div>
-              ))}
+            <div className="cc-teammate-dropdown">
+              <div className="dropdown-options">
+                {teammates.filter((u) => u.role === "user").length > 0 ? (
+                  teammates
+                    .filter((u) => u.role === "user")
+                    .map((u) => (
+                      <div
+                        key={u._id}
+                        className="dropdown-option"
+                        onClick={() => {
+                          setAssignedTeammate(u);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        <div className="cc-avatar-small">
+                          {(u.firstname?.charAt(0) || "").toUpperCase()}
+                          {(u.lastname?.charAt(0) || "").toUpperCase()}
+                        </div>
+
+                        <div className="dropdown-info">
+                          <span className="dropdown-name">
+                            {u.firstname} {u.lastname}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                ) : (
+                  <div className="dropdown-option">No users found</div>
+                )}
+              </div>
             </div>
           )}
 
@@ -427,7 +441,6 @@ export default function ContactCenter() {
               <div className="cc-ticket-status-left">
                 <Icon icon="mdi:ticket" className="cc-status-icon" />
                 <h2 className="cc-title">Ticket Status</h2>
-                
               </div>
               <div
                 className="cc-ticket-status-right"

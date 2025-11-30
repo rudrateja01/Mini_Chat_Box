@@ -30,7 +30,9 @@ body {
 /* Scrollable form area */
 .form-scroll-wrapper {
   flex: 1;            /* takes remaining space */
-  overflow-y: auto;   /* scroll if content too tall */
+  overflow-y: auto; 
+  position: relative;
+  bottom: 20px;  /* scroll if content too tall */
 }
 
 /* Logo */
@@ -73,7 +75,7 @@ body {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .form-group label {
   display: block;
@@ -145,6 +147,14 @@ body {
   height: 100%;
   object-fit: cover;
 }
+
+/* .form-group .terms-checkbox label {
+  font-size: 0.85em;
+  color: #555;
+  display: flex;
+  flex-direction: row;
+  height:  100px;
+} */
 
 /* Responsive */
 @media (max-width: 768px) {

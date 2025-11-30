@@ -95,7 +95,7 @@ body {
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
 }
 
-.submit-btn {
+.form-container .submit-btn {
   width: 100%;
   padding: 12px;
   background-color: #C3C3C3;

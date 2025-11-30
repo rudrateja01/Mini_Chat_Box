@@ -16,7 +16,7 @@ html, body {
 .landing-root {
   width: 100%;
   min-height: 100vh;
-  background: #fff;
+  background: rgb(248, 242, 242);
   padding-top: 80px; /* for navbar */
   position: relative;
 }
@@ -125,6 +125,7 @@ html, body {
   background: transparent;
   cursor: pointer;
   font-weight: 700;
+  font-size: 18px;
   color: #30404D;
   display: flex;
   align-items: center;
@@ -132,7 +133,7 @@ html, body {
 }
 
 .play-icon {
-  font-size: 22px;
+  font-size: 25px;
 }
 
 /* RIGHT PART */
@@ -146,8 +147,8 @@ html, body {
 }
 
 .img-main {
-  width: 400px;
-  height: 400px;
+  width: 350px;
+  height: 350px;
   border-radius: 12px;
   position: relative;
   z-index: 1;
@@ -169,16 +170,16 @@ html, body {
 }
 
 .img-small.analytics {
-  bottom: -45px;
-  right: 40px;
+  bottom: -30px;
+  right: 50px;
   width: 200px;
-  height: 110px;
+  height: 100px;
 }
 
 .img-small.calendar {
-  bottom: -100px;
-  left: 70px;
-  width: 220px;
+  bottom: -80px;
+  left: 90px;
+  width: 200px;
   height: 170px;
 }
 
@@ -379,3 +380,60 @@ html, body {
     height: auto;
   }
 }
+
+
+/* ============== LOGOS CONTAINER=============== */
+.logos{
+  background-color: #A2C2DF;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100px;
+  padding: 60px 20px;
+}
+.logos img{
+  height: 60px;
+  width: 150px;
+}
+
+/* ================initial-msg=================== */
+.initial-msg{
+  background-color:white;
+  width: 250px;
+  position: fixed;
+  bottom: 90px;    
+  right: 20px;     
+  padding: 30px 10px;
+  border-radius: 8px; 
+  color: #425B76;    
+}
+
+.initial-msg .robot{
+  position: absolute;
+  left: 100px;
+  bottom: 105px;
+}
+.initial-msg .cross{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+
+/* ===========chat icon ============== */
+.chat-icon {
+  position: fixed;       /* stays in viewport */
+  bottom: 20px;          /* distance from bottom */
+  right: 20px;           /* distance from right */
+  width: 60px;           /* size of the button */
+  height: 60px;
+  background-color: #33475B; /* chat bubble color */
+  border-radius: 50%;    /* makes it circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;         /* stay on top */
+}
+
